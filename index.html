@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>TunedHand（暫定名）｜資深工程師的真實專案與做法，籌備中</title>
+<meta name="description" content="TunedHand（暫定名）籌備中：預計收錄資深工程師的真實專案，看他們怎麼做出來，最後才是用到的 skill 包。尚未開張、不能購買、不收款，目前只有候補登記。名稱與口號可能更改。">
+<!--
+  重啟版候補頁（2026-11-06 草稿，尚未上線）。文案權威：../copy.md；隱私權威：../privacy-notice.md。
+  表單網址與來源碼欄位在 site-config.js。聯絡信箱直接寫在 HTML（不靠 JavaScript，隱私告知要求），換法見 README.md 的一行指令。
+  品牌 TunedHand 尚未定案；要換名就在三個檔全文替換 "TunedHand"。
+  刻意不載入任何外部資源（字型、分析、廣告像素都沒有）。
+-->
+<style>
+  :root {
+    --bg: #0e1116; --panel: #161b22; --line: #2a313c; --text: #e6edf3;
+    --muted: #9aa5b1; --accent: #7cc4ff; --accent-ink: #06121f; --warn: #f0b35a;
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --bg: #f7f8fa; --panel: #ffffff; --line: #dde1e6; --text: #14181f;
+            --muted: #5b6573; --accent: #0b63c5; --accent-ink: #ffffff; --warn: #9a5b00; }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); }
+  body { font: 16px/1.7 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC",
+         "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 16px; }
+  header { border-bottom: 1px solid var(--line); }
+  header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 14px; padding-bottom: 14px; }
+  .brand { font-weight: 700; letter-spacing: .02em; }
+  .lang button { background: none; border: 1px solid var(--line); color: var(--muted);
+                 padding: 4px 10px; border-radius: 6px; cursor: pointer; font: inherit; font-size: 14px; }
+  .lang button[aria-pressed="true"] { color: var(--text); border-color: var(--accent); }
+  .status { font-size: 14px; color: var(--warn); border: 1px solid var(--line); border-radius: 8px;
+            padding: 8px 12px; margin: 24px 0 0; background: var(--panel); }
+  h1 { font-size: clamp(28px, 6vw, 44px); line-height: 1.25; margin: 28px 0 12px; }
+  h2 { font-size: 22px; margin: 48px 0 16px; }
+  .lead { font-size: 18px; color: var(--text); }
+  .note { font-size: 14px; color: var(--muted); }
+  .cards { display: grid; gap: 14px; grid-template-columns: 1fr; }
+  @media (min-width: 720px) { .cards { grid-template-columns: repeat(3, 1fr); } }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+  .card h3 { font-size: 17px; margin: 0 0 8px; line-height: 1.4; }
+  .card p { margin: 0; color: var(--muted); font-size: 15px; }
+  ol.steps { padding-left: 22px; } ol.steps li { margin-bottom: 8px; }
+  .cta { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin: 40px 0; }
+  .cta p { margin: 0 0 12px; }
+  .btn { display: inline-block; background: var(--accent); color: var(--accent-ink); font-weight: 700;
+         text-decoration: none; padding: 12px 20px; border-radius: 8px; }
+  .btn:focus-visible, .lang button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .region { border-left: 3px solid var(--warn); padding-left: 12px; font-size: 15px; }
+  details { border-top: 1px solid var(--line); padding: 12px 0; }
+  details:last-of-type { border-bottom: 1px solid var(--line); }
+  summary { cursor: pointer; font-weight: 600; }
+  details p { color: var(--muted); margin: 8px 0 0; }
+  a { color: var(--accent); }
+  footer { border-top: 1px solid var(--line); margin-top: 48px; padding: 20px 0 40px; font-size: 14px; color: var(--muted); }
+  [hidden] { display: none !important; }
+  .table { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; }
+  th, td { border-bottom: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; }
+  td:last-child, th:last-child { white-space: nowrap; }
+  .btn.off { background: var(--line); color: var(--muted); cursor: default; }
+</style>
+<script src="site-config.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "inLanguage": "zh-Hant",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "現在可以買嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "不行。這一頁是在了解需求：你留下 email 和你願意付的價格區間，我們用來決定要不要做、先做什麼。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "什麼時候開張？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "預計 2027 年第二季前後。這是估計，可能延後，也可能因為需求不足或其他條件沒過而不開張。開張前不收任何款項。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "登記要先付錢嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "不用。不收訂金、不要信用卡、沒有任何約束；你選的價格區間只是讓我們知道需求，不是訂單，也不是承諾，你隨時可以改變主意。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "「skill」是什麼？我要怎麼用？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "skill 是一組做好的指示、檢查清單和（有時）程式，讓 AI 工具照作者整理好的方法做事。用法是下載 zip，放進工具的 skill 資料夾，或上傳到 Claude App；不同工具要求不同，開張前我們會寫清楚。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "有免費的 skill 嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "可能有，但只有一種：免費精簡版。它的內容比完整版少，裡面唯一的連結是對應的作品頁，不連到結帳頁（規劃中、可能調整）。要公開放在哪裡還沒決定，也不保證會被任何 AI 公司的官方目錄或商店收錄。完整的 skill 包預計是付費買斷，由作者定價；現在沒有固定數字，一切都還沒定。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "審核是怎麼回事？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "每個 skill 上架前預計由人工審核，並用白話列出它能存取什麼。人工審核不等於保證：審核者可能漏看，你仍應該自己先讀過內容，並在不重要的資料上試用。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "TunedHand 的 skill 和「自己叫 AI 寫一個」有什麼不同？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "你當然可以自己寫。我們賭的是：在某些專門領域，做了很多年的人知道的細節，你一時想不到、也不容易靠反覆試出來。是不是真的這樣，正是我們現在想問你的事，歡迎在表單告訴我們。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "哪些地區可以登記？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "台灣、香港、澳門、新加坡、馬來西亞、美國、加拿大、瑞士，以及不在下面名單裡的其他國家都可以登記。開張時預計先從台灣開始，其他地區什麼時候能購買還沒決定（不保證）。目前不服務歐盟、歐洲經濟區、英國與中國大陸，也不收這些地區的登記資料。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "價格大概多少？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "價格預計由各 skill 的作者決定，現在沒有固定數字。表單裡的價格區間只是讓我們了解需求，開張前可能調整。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "我的資料會怎麼用？會被寄廣告信嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "資料用來通知開張與了解需求；如果你勾選願意受訪，我們會用同一個 email 聯絡你。你可能會收到一封確認信，問你是否仍有意。開張通知之外，不寄電子報或其他行銷信。完整說明見隱私告知頁；要查詢或刪除，寄信到 tunedhand.tw@gmail.com。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "哪裡可以買中文的 Claude skill？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "目前哪裡都還不能買 TunedHand 的 skill。TunedHand（暫定名）正在籌備一個以繁體中文為主、出版資深工程師作品與做法的網站：預計每個作品頁講它怎麼做出來，最後才是用到的 skill 包（預計付費買斷），預計 2027 年第二季前後開張（估計，可能延後或不開張）。現在只開放候補登記，不收任何款項。TunedHand 與 Anthropic 沒有合作或從屬關係。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "TunedHand 跟 Agensi 這類既有的 skill 市集是什麼關係？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Agensi（agensi.io）是另一個已經在運作的 agent skill 市集，與 TunedHand 沒有合作或從屬關係。以下只說明 TunedHand 自己的規劃，不是比較：以繁體中文為主、以工程師的真實專案與做法為主角（作品牆，規劃中、可能調整）、預計每個 skill 包附一個用它做出來的真實專案、skill 包預計付費買斷、預計每個 skill 包上架前經過人工審核（人工審核不等於保證）。TunedHand 目前尚未開張。要了解 Agensi 的做法，請看它自己的網站。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "TunedHand 支援哪些 AI 工具？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "預計賣的是裝進你自己在用的 AI 工具的 skill，不是另一個 AI 服務。規劃中的做法是下載 zip，放進工具的 skill 資料夾，或上傳到 Claude App；每個 skill 頁面預計會寫明測過哪些工具（例如 Claude Code、Claude App、Codex）。各工具做法與限制不同，開張前會寫清楚。TunedHand 與這些工具的公司沒有合作或從屬關係。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "我想把自己的方法做成 skill 來賣，怎麼聯絡？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "網站尚未開張，目前沒有投稿流程。預計每個上架的 skill 包都要附一個用它做出來的真實專案。有興趣的話，可以直接寫信到tunedhand.tw@gmail.com 聯絡創辦人。"
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="brand">TunedHand</span>
+    <span class="lang" role="group" aria-label="Language">
+      <button type="button" data-set-lang="zh" aria-pressed="true">中文</button>
+      <button type="button" data-set-lang="en" aria-pressed="false">English</button>
+    </span>
+  </div>
+</header>
+
+<noscript><div class="wrap"><p class="status">報名按鈕需要 JavaScript。The sign-up button needs JavaScript.</p></div></noscript>
+
+<!-- ===================== 中文 ===================== -->
+<main class="wrap" data-lang="zh">
+  <p class="status">籌備中，尚未開張：目前還沒有任何作品或 skill 包，不能購買，也沒有收任何款項。預計 2027 年第二季前後開張（估計），可能延後，也可能因為需求不足而不開張。</p>
+
+  <h1>一面作品牆（籌備中）：<br>看資深工程師的真實專案是怎麼做出來的。</h1>
+  <p class="lead">TunedHand 正在籌備一個出版資深工程師作品與做法的網站。首頁預計是一面作品牆：每張卡片是一個真實的專案，點進去看它怎麼做出來，最後才是做這個專案用到的 skill 包。每個上架的 skill 包預計都附一個用它做出來的真實專案。作者的經歷以作者自己說明為準，我們是否另外查核還沒決定。skill 包預計一次買斷；也可能有只連到作品頁的免費精簡版。預計每個 skill 包上架前都經過人工審核（人工審核不等於保證）。名稱與口號可能更改。現在登記，<strong>不用付錢</strong>。</p>
+  <p class="note">「skill」是一組做好的指示、檢查清單和（有時）程式，裝進你自己在用的 AI 工具（例如 Claude Code、Codex）。我們預計提供的是作品、做法，以及裝進這些工具的 skill 包，不是另一個 AI 服務，也不是訓練過或微調過的模型。</p>
+
+  <div class="cta">
+    <p><strong>登記意向，約 2 分鐘。</strong>不付錢、不用信用卡、沒有任何約束。</p>
+    <p><a class="btn js-form" data-form="zh" href="#" target="_blank" rel="noopener">登記意向</a></p>
+    <p class="region">我們目前<strong>不服務歐盟、歐洲經濟區（含冰島、挪威、列支敦斯登）、英國與中國大陸</strong>，也不收這些地區的登記。瑞士可以。</p>
+  </div>
+
+  <h2>為什麼</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>只看說明文字，很難知道一份 skill 好不好。</h3>
+      <p>看得到用它做出來的成品，就不用只靠相信。每個 skill 包預計都附一個真實專案（公開程式庫或可操作的展示），沒有就不上架。作品是作者自己用這份 skill 做的；你用同一份 skill，不一定做得出一樣的成果。</p>
+    </div>
+    <div class="card">
+      <h3>「做得像內行」靠品味，品味很難自己湊。</h3>
+      <p>作品頁預計寫出做法：先檢查什麼、怎麼取捨、成品長什麼樣。預計讓你看到作者實際做過的事，而不是只有一句「很專業」。</p>
+    </div>
+    <div class="card">
+      <h3>先看作品，最後才是 skill 包。</h3>
+      <p>想用同一套做法，再取得用到的 skill 包。價格預計由作者定，一次買斷、不是訂閱（開張前可能調整）；也可能有只連到作品頁的免費精簡版。每個 skill 包上架前預計都經過<strong>人工審核</strong>，並用白話列出它會讀取或寫入什麼。人工審核不等於保證：你仍然應該自己先看內容，先在不重要的資料上試用。</p>
+    </div>
+  </div>
+
+  <h2>怎麼運作</h2>
+  <ol class="steps">
+    <li><strong>看</strong>：在作品牆挑一個真實專案，點進去看它怎麼做出來。（預計開張後）</li>
+    <li><strong>買斷</strong>：想用同一套做法，再取得用到的 skill 包，一次付費，預計不是訂閱。（預計開張後；目前不能購買，也沒有收任何款項。）</li>
+    <li><strong>用</strong>：下載 zip，放進你工具的 skill 資料夾，或上傳到 Claude App。各工具的做法與限制不同，每個 skill 頁面預計會寫明它測過哪些。（預計開張後）</li>
+  </ol>
+
+  <h2>常見問題</h2>
+  <details><summary>現在可以買嗎？</summary>
+    <p>不行。這一頁是在了解需求：你留下 email 和你願意付的價格區間，我們用來決定要不要做、先做什麼。</p></details>
+  <details><summary>什麼時候開張？</summary>
+    <p>預計 2027 年第二季前後。這是估計，可能延後，也可能因為需求不足或其他條件沒過而不開張。開張前不收任何款項。</p></details>
+  <details><summary>登記要先付錢嗎？</summary>
+    <p>不用。不收訂金、不要信用卡、沒有任何約束；你選的價格區間只是讓我們知道需求，不是訂單，也不是承諾，你隨時可以改變主意。</p></details>
+  <details><summary>「skill」是什麼？我要怎麼用？</summary>
+    <p>skill 是一組做好的指示、檢查清單和（有時）程式，讓 AI 工具照作者整理好的方法做事。用法是下載 zip，放進工具的 skill 資料夾，或上傳到 Claude App；不同工具要求不同，開張前我們會寫清楚。</p></details>
+  <details><summary>有免費的 skill 嗎？</summary>
+    <p>可能有，但只有一種：免費精簡版。它的內容比完整版少，裡面唯一的連結是對應的作品頁，不連到結帳頁（規劃中、可能調整）。要公開放在哪裡還沒決定，也不保證會被任何 AI 公司的官方目錄或商店收錄。完整的 skill 包預計是付費買斷，由作者定價；現在沒有固定數字，一切都還沒定。</p></details>
+  <details><summary>審核是怎麼回事？</summary>
+    <p>每個 skill 上架前預計由人工審核，並用白話列出它能存取什麼。人工審核不等於保證：審核者可能漏看，你仍應該自己先讀過內容，並在不重要的資料上試用。</p></details>
+  <details><summary>TunedHand 的 skill 和「自己叫 AI 寫一個」有什麼不同？</summary>
+    <p>你當然可以自己寫。我們賭的是：在某些專門領域，做了很多年的人知道的細節，你一時想不到、也不容易靠反覆試出來。是不是真的這樣，正是我們現在想問你的事，歡迎在表單告訴我們。</p></details>
+  <details><summary>哪些地區可以登記？</summary>
+    <p>台灣、香港、澳門、新加坡、馬來西亞、美國、加拿大、瑞士，以及不在下面名單裡的其他國家都可以登記。開張時預計先從台灣開始，其他地區什麼時候能購買還沒決定（不保證）。目前不服務歐盟、歐洲經濟區、英國與中國大陸，也不收這些地區的登記資料。</p></details>
+  <details><summary>價格大概多少？</summary>
+    <p>價格預計由各 skill 的作者決定，現在沒有固定數字。表單裡的價格區間只是讓我們了解需求，開張前可能調整。</p></details>
+  <details><summary>我的資料會怎麼用？會被寄廣告信嗎？</summary>
+    <p>資料用來通知開張與了解需求；如果你勾選願意受訪，我們會用同一個 email 聯絡你。你可能會收到一封確認信，問你是否仍有意。開張通知之外，不寄電子報或其他行銷信。完整說明見<a href="privacy.html?lang=zh">隱私告知頁</a>；要查詢或刪除，寄信到 <a href="mailto:tunedhand.tw@gmail.com">tunedhand.tw@gmail.com</a>。</p></details>
+  <details><summary>哪裡可以買中文的 Claude skill？</summary>
+    <p>目前哪裡都還不能買 TunedHand 的 skill。TunedHand（暫定名）正在籌備一個以繁體中文為主、出版資深工程師作品與做法的網站：預計每個作品頁講它怎麼做出來，最後才是用到的 skill 包（預計付費買斷），預計 2027 年第二季前後開張（估計，可能延後或不開張）。現在只開放候補登記，不收任何款項。TunedHand 與 Anthropic 沒有合作或從屬關係。</p></details>
+  <details><summary>TunedHand 跟 Agensi 這類既有的 skill 市集是什麼關係？</summary>
+    <p>Agensi（agensi.io）是另一個已經在運作的 agent skill 市集，與 TunedHand 沒有合作或從屬關係。以下只說明 TunedHand 自己的規劃，不是比較：以繁體中文為主、以工程師的真實專案與做法為主角（作品牆，規劃中、可能調整）、預計每個 skill 包附一個用它做出來的真實專案、skill 包預計付費買斷、預計每個 skill 包上架前經過人工審核（人工審核不等於保證）。TunedHand 目前尚未開張。要了解 Agensi 的做法，請看它自己的網站。</p></details>
+  <details><summary>TunedHand 支援哪些 AI 工具？</summary>
+    <p>預計賣的是裝進你自己在用的 AI 工具的 skill，不是另一個 AI 服務。規劃中的做法是下載 zip，放進工具的 skill 資料夾，或上傳到 Claude App；每個 skill 頁面預計會寫明測過哪些工具（例如 Claude Code、Claude App、Codex）。各工具做法與限制不同，開張前會寫清楚。TunedHand 與這些工具的公司沒有合作或從屬關係。</p></details>
+  <details><summary>我想把自己的方法做成 skill 來賣，怎麼聯絡？</summary>
+    <p>網站尚未開張，目前沒有投稿流程。預計每個上架的 skill 包都要附一個用它做出來的真實專案。有興趣的話，可以直接寫信到<a href="mailto:tunedhand.tw@gmail.com">tunedhand.tw@gmail.com</a> 聯絡創辦人。</p></details>
+
+  <div class="cta">
+    <p>想在開張時收到通知，或願意受訪 40 分鐘？</p>
+    <p><a class="btn js-form" data-form="zh" href="#" target="_blank" rel="noopener">登記意向</a></p>
+  </div>
+
+  <footer>
+    <p>TunedHand 目前只是籌備中的計畫，由個人（陳翰陞）籌備，尚未設立公司。本頁不是販售頁，不構成任何要約或承諾。所有日期、價格區間、作品牆與做法都是預計，開張前可能調整。我們不服務歐盟、EEA、英國與中國大陸。文中提到的 AI 工具名稱（例如 Claude、Codex）屬於各自的公司，TunedHand 和這些公司沒有合作或從屬關係。</p>
+    <p><a href="privacy.html?lang=zh">隱私告知</a>　·　<a href="mailto:tunedhand.tw@gmail.com">tunedhand.tw@gmail.com</a></p>
+  </footer>
+</main>
+
+<!-- ===================== English ===================== -->
+<main class="wrap" data-lang="en" lang="en" hidden>
+  <p class="status">In preparation. Not open: there are no works or skill packs yet, nothing can be bought, and no payment is collected. We expect to open around the second quarter of 2027 (an estimate). It may slip, and it may not open at all if there is not enough interest.</p>
+
+  <h1>A wall of works (in preparation):<br>see how senior engineers built real projects.</h1>
+  <p class="lead">TunedHand is a planned publisher of senior engineers' work and methods. The home page is planned as a wall of works: each card is a real project, you click in to see how it was made, and only at the end do you see the skill pack that was used. Each listed skill pack is planned to come with a real project built with it. A maker's experience is as the maker describes it; whether we will verify it separately has not been decided. Skill packs are planned as a one-time purchase, and a free slim version may exist only to link to the work page. Each skill pack is planned to be human-reviewed before listing (human review is not a guarantee). The name and slogan may change. Joining the list is <strong>free, and nothing is charged</strong>.</p>
+  <p class="note">A "skill" is a packaged set of instructions, checklists and sometimes scripts that you add to the AI tool you already use (for example Claude Code or Codex). What we plan to offer are works, methods, and skill packs for those tools, not a separate AI service and not trained or fine-tuned models.</p>
+
+  <div class="cta">
+    <p><strong>Register your interest. It takes about 2 minutes.</strong> No payment, no card, no obligation.</p>
+    <p><a class="btn js-form" data-form="en" href="#" target="_blank" rel="noopener">Join the list</a></p>
+    <p class="region">We do <strong>not</strong> currently serve the European Union, the European Economic Area (including Iceland, Norway and Liechtenstein), the United Kingdom or mainland China, and we do not accept sign-ups from those places. Switzerland is fine.</p>
+  </div>
+
+  <h2>Why</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Reading a description rarely tells you whether a skill is any good.</h3>
+      <p>When you can see what was built with it, you do not have to take it on trust. Each skill pack is planned to come with a real project (a public repository or a demo you can operate), and without one it is not listed. Each work is made by its maker with the skill; using the same skill will not necessarily give you the same result.</p>
+    </div>
+    <div class="card">
+      <h3>Looking like you know the field comes down to taste, and taste is hard to assemble alone.</h3>
+      <p>Each work page is planned to show the method: what was checked first, how trade-offs were made, what the result looks like. The plan is to show what the maker actually did, instead of just the word "professional".</p>
+    </div>
+    <div class="card">
+      <h3>See the work first. The skill pack comes last.</h3>
+      <p>If you want the same method, you can then get the skill pack that was used. Makers are expected to set the price, and we plan a one-time purchase rather than a subscription (both may change before launch). A free slim version may exist only to link to the work page. Each skill pack is planned to go through <strong>human review</strong> before listing, with its access described in plain language. Human review is not a guarantee: read the contents and try it on unimportant data before relying on it.</p>
+    </div>
+  </div>
+
+  <h2>How it will work</h2>
+  <ol class="steps">
+    <li><strong>See</strong>: pick a real project on the wall of works and click in to see how it was made. (Planned, after launch.)</li>
+    <li><strong>Buy once</strong>: if you want the same method, get the skill pack that was used, as a one-time purchase, planned not to be a subscription. (Planned, after launch; nothing can be bought now and no payment is collected.)</li>
+    <li><strong>Use</strong>: download the zip and put it in your tool's skill folder, or upload it to the Claude App. Steps and limits differ by tool, and each skill page is planned to say which ones it was tested on. (Planned, after launch.)</li>
+  </ol>
+
+  <h2>Questions</h2>
+  <details><summary>Can I buy anything today?</summary>
+    <p>No. This page is a way to learn whether there is real demand. Your email and the price range you pick help us decide whether to build this and what to start with.</p></details>
+  <details><summary>When will it open?</summary>
+    <p>We expect to open around the second quarter of 2027. This is an estimate. It may slip, and it may not open at all if there is not enough interest or other conditions are not met. Nothing is charged before then.</p></details>
+  <details><summary>Does signing up cost anything?</summary>
+    <p>No. No deposit, no card, no obligation. The price range you pick is just information for us. It is not an order and not a commitment, and you can change your mind at any time.</p></details>
+  <details><summary>What is a skill, and how do I use one?</summary>
+    <p>A skill is a packaged set of instructions, checklists and sometimes scripts that makes an AI tool follow the method its maker wrote down. You download a zip and put it in your tool's skill folder, or upload it to the Claude App. Tools differ, and we will spell out the steps before launch.</p></details>
+  <details><summary>Will there be free skills?</summary>
+    <p>Possibly, but only one kind: a free slim version. It contains less than the full pack, and its only link is to the matching work page, never to checkout (planned, may change). Where it will be published has not been decided, and we do not promise that any AI company's official directory or store will list it. Full skill packs are planned as a one-time paid purchase, priced by their maker. Nothing is fixed yet.</p></details>
+  <details><summary>What does review mean?</summary>
+    <p>Each skill is planned to be reviewed by a person before listing, and what it can access will be described in plain language. Human review is not a guarantee. A reviewer can miss things, so read it yourself and try it on unimportant data before relying on it.</p></details>
+  <details><summary>How is this different from asking an AI to write a skill for me?</summary>
+    <p>You certainly can. Our bet is that in some specialized fields, people with years of practice know details you would not think of and would struggle to reach by trial and error. Whether that is really true is exactly what we want to find out, so please tell us in the form.</p></details>
+  <details><summary>Where can I sign up from?</summary>
+    <p>You can sign up from Taiwan, Hong Kong, Macau, Singapore, Malaysia, the United States, Canada, Switzerland and other countries not in the list below. We plan to start with Taiwan when we open; when other places can buy has not been decided (not a promise). We do <strong>not</strong> currently serve the European Union, the European Economic Area (including Iceland, Norway and Liechtenstein), the United Kingdom or mainland China, and we do not accept sign-ups from those places. If you choose "prefer not to say" for the location question, we treat you as being in one of those regions and collect nothing.</p></details>
+  <details><summary>How much will skills cost?</summary>
+    <p>Each maker is expected to set their own price, and nothing is fixed yet. The ranges in the form are there just to help us understand demand, and they may change before launch.</p></details>
+  <details><summary>What happens to my data? Will I get marketing emails?</summary>
+    <p>We use it to tell you when we open and to understand demand. If you tick that you are willing to be interviewed, we will contact you at the same address. You may get one confirmation email asking whether you are still interested. Apart from the launch notice, we send no newsletter or other marketing. Read the full <a href="privacy.html?lang=en">privacy notice</a>. To ask about or delete your data, write to <a href="mailto:tunedhand.tw@gmail.com">tunedhand.tw@gmail.com</a>.</p></details>
+  <details><summary>Where can I buy Chinese-language Claude skills?</summary>
+    <p>Nothing from TunedHand can be bought yet. TunedHand (working name) is a planned publisher of senior engineers' works and methods, focused on Traditional Chinese: each work page is planned to show how it was made, with the skill pack used only at the end (planned as a one-time paid purchase). We expect to open around the second quarter of 2027 (an estimate; it may slip or not open). For now there is only a waitlist, and no payment is collected. TunedHand is not affiliated with Anthropic.</p></details>
+  <details><summary>How does TunedHand relate to existing skill marketplaces such as Agensi?</summary>
+    <p>Agensi (agensi.io) is a separate, already-operating marketplace for agent skills, and TunedHand has no partnership or affiliation with it. What follows describes only TunedHand's own plan and is not a comparison: a focus on Traditional Chinese, senior engineers' real projects as the main thing (a wall of works; planned and may change), each skill pack planned to come with a real project built with it, skill packs planned to be paid and bought once, and human review planned before each listing (human review is not a guarantee). TunedHand has not opened yet. To learn how Agensi works, see its own website.</p></details>
+  <details><summary>Which AI tools does TunedHand support?</summary>
+    <p>The plan is to sell skills you add to the AI tool you already use, not a separate AI service. The planned method is to download a zip and put it in your tool's skill folder, or upload it to the Claude App, and each skill page is planned to say which tools it was tested on (for example Claude Code, Claude App, Codex). Steps and limits differ by tool and will be spelled out before launch. TunedHand is not affiliated with the companies behind these tools.</p></details>
+  <details><summary>I want to turn my own method into a skill and sell it. How do I get in touch?</summary>
+    <p>The site has not opened and there is no submission process yet. Each listed skill pack is planned to come with a real project built with it. If you are interested, write to the founder at <a href="mailto:tunedhand.tw@gmail.com">tunedhand.tw@gmail.com</a>.</p></details>
+
+  <div class="cta">
+    <p>Want to hear when we open, or happy to do a 40-minute interview?</p>
+    <p><a class="btn js-form" data-form="en" href="#" target="_blank" rel="noopener">Join the list</a></p>
+  </div>
+
+  <footer>
+    <p>TunedHand is a plan in preparation, run by an individual (陳翰陞); no company has been set up. This page is not a sales page and is not an offer or a promise. All dates, price ranges, the wall of works and methods are estimates and may change before launch. We do not serve the EU, the EEA, the UK or mainland China. AI tool names mentioned here (such as Claude and Codex) belong to their owners. TunedHand is not affiliated with them.</p>
+    <p><a href="privacy.html?lang=en">Privacy notice</a> · <a href="mailto:tunedhand.tw@gmail.com">tunedhand.tw@gmail.com</a></p>
+  </footer>
+</main>
+
+<script>
+/*
+  只做三件事，不送任何資料出去：
+  1. 切換中英文（?lang=zh|en 優先，否則看瀏覽器語言）。
+  2. 從 site-config.js 填表單網址；表單還沒建時，按鈕顯示「表單準備中」。
+  3. 把網址上的來源碼 ?src=xxx 帶進 Google 表單的預先填入欄位（取代分析工具）。
+*/
+(function () {
+  var C = window.SITE_CONFIG || {};
+  var params = new URLSearchParams(location.search);
+
+  function setLang(lang) {
+    document.querySelectorAll("main[data-lang]").forEach(function (m) {
+      m.hidden = m.getAttribute("data-lang") !== lang;
+    });
+    document.querySelectorAll("[data-set-lang]").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.getAttribute("data-set-lang") === lang));
+    });
+    document.documentElement.lang = lang === "en" ? "en" : "zh-Hant";
+  }
+  var initial = params.get("lang");
+  if (initial !== "zh" && initial !== "en") {
+    initial = /^zh/i.test(navigator.language || "") ? "zh" : "en";
+  }
+  setLang(initial);
+  document.querySelectorAll("[data-set-lang]").forEach(function (b) {
+    b.addEventListener("click", function () { setLang(b.getAttribute("data-set-lang")); });
+  });
+
+  var src = (params.get("src") || "direct").replace(/[^a-z0-9_-]/gi, "").slice(0, 40) || "direct";
+  var FORM = { zh: C.formUrlZh, en: C.formUrlEn };
+  var ENTRY = { zh: C.sourceEntryZh, en: C.sourceEntryEn };
+  document.querySelectorAll("a.js-form").forEach(function (a) {
+    var lang = a.getAttribute("data-form");
+    var base = FORM[lang];
+    if (!base) {
+      a.textContent = lang === "en" ? "Form coming soon" : "表單準備中";
+      a.removeAttribute("href");
+      a.setAttribute("aria-disabled", "true");
+      a.classList.add("off");
+      return;
+    }
+    try {
+      var url = new URL(base);
+      if (ENTRY[lang]) {
+        url.searchParams.set("usp", "pp_url");
+        url.searchParams.set(ENTRY[lang], src);
+      }
+      a.setAttribute("href", url.toString());
+    } catch (e) { a.setAttribute("href", base); }
+  });
+})();
+</script>
+</body>
+</html>

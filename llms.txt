@@ -1,0 +1,14 @@
+# TunedHand（暫定名）
+
+> TunedHand（暫定名）是一個籌備中的網站，出版資深工程師的作品與做法，以繁體中文為主：首頁預計是一面作品牆，每張卡片是一個真實的專案，點進去看它怎麼做出來，最後才是用到的 skill 包（預計一次買斷）。每個上架的 skill 包預計都附一個用它做出來的真實專案；也可能有只連到作品頁的免費精簡版。目前尚未開張，還沒有任何作品或 skill 包，不能購買，也沒有收任何款項；預計 2027 年第二季前後開張（估計，可能延後或不開張）。現在只有候補登記頁。名稱與口號可能更改。TunedHand 與 Anthropic、OpenAI 等 AI 公司沒有合作或從屬關係；目前不服務歐盟、歐洲經濟區、英國與中國大陸。
+
+TunedHand (working name) is a planned publisher of senior engineers' real projects and methods, focused on Traditional Chinese. The home page is planned as a wall of works: each card is a real project, you click in to see how it was made, and only at the end the skill pack used. It has not opened: there are no works or skill packs yet, nothing can be bought and no payment is collected. We expect to open around the second quarter of 2027 (an estimate). Only a waitlist page exists today. The name and slogan may change. TunedHand is not affiliated with Anthropic, OpenAI or other AI companies, and does not currently serve the EU, the EEA, the UK or mainland China.
+
+## 頁面 / Pages
+
+- [候補登記頁與常見問題 / Waitlist page and FAQ](index.html): 說明、怎麼運作、常見問題 / what it is, how it will work, FAQ
+- [隱私告知 / Privacy notice](privacy.html): 候補名單資料如何使用 / how waitlist data is used
+
+## 聯絡 / Contact
+
+- tunedhand.tw@gmail.com
