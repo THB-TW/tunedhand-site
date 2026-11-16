@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>怎麼把自己的工作流程做成 Claude skill？｜TunedHand（暫定名）</title>
+<meta name="description" content="怎麼把重複交代 AI 的工作流程做成 Claude skill：SKILL.md 的最小結構、Claude 何時會用、腳本與參考資料放哪裡、實用寫法。依 Anthropic 公開文件整理（2026 年 11 月查閱）。">
+<style>
+  :root {
+    --bg: #0e1116; --panel: #161b22; --line: #2a313c; --text: #e6edf3;
+    --muted: #9aa5b1; --accent: #7cc4ff; --accent-ink: #06121f; --warn: #f0b35a;
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --bg: #f7f8fa; --panel: #ffffff; --line: #dde1e6; --text: #14181f;
+            --muted: #5b6573; --accent: #0b63c5; --accent-ink: #ffffff; --warn: #9a5b00; }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); }
+  body { font: 16px/1.7 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC",
+         "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 16px; }
+  header { border-bottom: 1px solid var(--line); }
+  header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 14px; padding-bottom: 14px; }
+  .brand { font-weight: 700; letter-spacing: .02em; }
+  .lang button { background: none; border: 1px solid var(--line); color: var(--muted);
+                 padding: 4px 10px; border-radius: 6px; cursor: pointer; font: inherit; font-size: 14px; }
+  .lang button[aria-pressed="true"] { color: var(--text); border-color: var(--accent); }
+  .status { font-size: 14px; color: var(--warn); border: 1px solid var(--line); border-radius: 8px;
+            padding: 8px 12px; margin: 24px 0 0; background: var(--panel); }
+  h1 { font-size: clamp(28px, 6vw, 44px); line-height: 1.25; margin: 28px 0 12px; }
+  h2 { font-size: 22px; margin: 48px 0 16px; }
+  .lead { font-size: 18px; color: var(--text); }
+  .note { font-size: 14px; color: var(--muted); }
+  .cards { display: grid; gap: 14px; grid-template-columns: 1fr; }
+  @media (min-width: 720px) { .cards { grid-template-columns: repeat(3, 1fr); } }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+  .card h3 { font-size: 17px; margin: 0 0 8px; line-height: 1.4; }
+  .card p { margin: 0; color: var(--muted); font-size: 15px; }
+  ol.steps { padding-left: 22px; } ol.steps li { margin-bottom: 8px; }
+  .cta { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin: 40px 0; }
+  .cta p { margin: 0 0 12px; }
+  .btn { display: inline-block; background: var(--accent); color: var(--accent-ink); font-weight: 700;
+         text-decoration: none; padding: 12px 20px; border-radius: 8px; }
+  .btn:focus-visible, .lang button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .region { border-left: 3px solid var(--warn); padding-left: 12px; font-size: 15px; }
+  details { border-top: 1px solid var(--line); padding: 12px 0; }
+  details:last-of-type { border-bottom: 1px solid var(--line); }
+  summary { cursor: pointer; font-weight: 600; }
+  details p { color: var(--muted); margin: 8px 0 0; }
+  a { color: var(--accent); }
+  footer { border-top: 1px solid var(--line); margin-top: 48px; padding: 20px 0 40px; font-size: 14px; color: var(--muted); }
+  [hidden] { display: none !important; }
+  .table { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; }
+  th, td { border-bottom: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; }
+  td:last-child, th:last-child { white-space: nowrap; }
+  .btn.off { background: var(--line); color: var(--muted); cursor: default; }
+</style>
+<style> pre { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px; overflow-x: auto; font-size: 14px; } code { font-size: .92em; } h1 { font-size: clamp(26px, 5vw, 36px); } </style>
+</head>
+<body>
+<header><div class="wrap"><a class="brand" href="../index.html?src=article" style="color:inherit;text-decoration:none">TunedHand（暫定名）</a></div></header>
+<main class="wrap">
+<h1>怎麼把自己的工作流程做成 Claude skill？</h1>
+<p><strong>問：我每次都對 AI 重複交代同一套做事步驟，能不能把它存成一份 skill，之後直接叫出來用？</strong></p>
+<p>可以。skill 就是一個資料夾，裡面放一份 <code>SKILL.md</code>，把你的做法寫成 Claude 可以照著做的指示。下面照 Anthropic 公開文件（2026 年 11 月查閱）說明做法與限制。</p>
+<h2>Q1：skill 的最小結構是什麼？</h2>
+<p>一個資料夾加一個 <code>SKILL.md</code>。檔案開頭是 YAML frontmatter（用 <code>---</code> 包起來），後面是 Markdown 指示：</p>
+<pre><code>---
+name: weekly-report
+description: 把本週的 commit 與 issue 整理成週報。當使用者提到週報、週會摘要時使用。
+---
+
+1. 讀取本週合併的 PR 與關閉的 issue。
+2. 依「完成、進行中、卡住」三段整理。
+3. 每項附上連結，語氣精簡。</code></pre>
+<p>重點是 <code>name</code> 與 <code>description</code>。平台文件的規定：<code>name</code> 最多 64 字元，只能用小寫字母、數字與連字號，不能含 <code>anthropic</code> 或 <code>claude</code> 這兩個保留字；<code>description</code> 最多 1,024 字元，要同時寫「這個 skill 做什麼」與「什麼時候該用」。Claude Code 文件則寫得較寬鬆：所有欄位都是選填，只建議寫 <code>description</code>。兩份文件的說法不同，建議兩個欄位都照平台文件的規則寫，各個平台都過得去。</p>
+<h2>Q2：Claude 怎麼決定要不要用這份 skill？</h2>
+<p>靠 <code>description</code>。Anthropic 的說明是漸進式載入：一開始只把每個 skill 的名稱與描述放進上下文（文件估計每個約 100 個 token），Claude 判斷你的請求符合描述，才讀 <code>SKILL.md</code> 本文，需要時再讀資料夾裡的其他檔案。所以描述寫得太籠統，Claude 就不會想到要用它；把常見的說法、觸發情境寫進去，比把步驟寫得很長更有用。Claude Code 文件另提醒，description 加上 when_to_use 合計超過 1,536 字元，會在 skill 清單裡被截斷，最重要的用途要放前面。</p>
+<h2>Q3：可以放腳本和參考資料嗎？</h2>
+<p>可以，這是選用的。資料夾裡可以多放參考文件、範例，或 <code>scripts/</code> 底下的腳本（例如 Python）。文件說明腳本是被執行而不是被讀進上下文，只有執行結果會進入對話，所以適合放需要每次都做得一模一樣的步驟，例如格式檢查。在 <code>SKILL.md</code> 裡要寫明什麼情況該讀哪個檔案，Claude 才知道何時去取。官方建議 <code>SKILL.md</code> 本文控制在 500 行內，細節拆到別的檔案。</p>
+<h2>Q4：存放在哪裡？</h2>
+<ul><li><strong>Claude Code</strong>：個人用放 <code>~/.claude/skills/&lt;skill 名稱&gt;/SKILL.md</code>，只給某個專案用放該專案的 <code>.claude/skills/&lt;skill 名稱&gt;/SKILL.md</code>，後者可以提交進版本庫與團隊共用。</li><li><strong>Claude.ai（網頁與 App）</strong>：把資料夾壓成 zip 上傳。依文件，這在 Pro、Max、Ultra、Team、Enterprise 等方案、且開啟程式碼執行功能時可用。</li><li><strong>Claude API</strong>：透過 skills 相關端點上傳，搭配程式碼執行工具使用。</li></ul>
+<p>平台文件註明：自訂 skill 不會在 Claude.ai 與 API 之間同步，要各自上傳。例外是 Claude Code：用 claude.ai 帳號登入時，會把帳號裡啟用的 skill 單向下載到電腦上（Claude Code 文件，需 v2.1.273 以上）；你在電腦上寫的 skill 不會反過來上傳到 claude.ai。</p>
+<h2>Q5：把工作流程變成好用的 skill，有什麼實際建議？</h2>
+<p>這一段是經驗談，不是官方規定：</p>
+<ol><li><strong>先從一個你每週都在重複的任務開始</strong>，不要一開始就想包山包海。</li><li><strong>指示寫成可檢查的步驟</strong>，例如「輸出一定要有三個段落」，比「寫得專業一點」好驗證。</li><li><strong>把「什麼時候不要用」寫進描述</strong>，避免誤觸發。</li><li><strong>用真實任務試跑</strong>，看 Claude 有沒有照步驟做，再回頭改指示。</li><li><strong>只裝來源可信、你也讀過內容的 skill。</strong> 官方文件建議只用可信來源的 skill：你自己寫的，或 Anthropic 提供的。來源不明的要格外小心，完整檢視 <code>SKILL.md</code>、腳本、圖片與其他資源，留意預期之外的網路請求、檔案存取，或和它說的用途不符的操作；文件提醒，惡意 skill 可能造成資料外洩或未經授權的存取。我們另外建議：讀過內容也不代表沒有風險，自己寫的也一樣，先在不重要的資料上試用。</li></ol>
+<h2>Q6：我想知道別人是怎麼做的，哪裡看得到？</h2>
+<p>單看一份 skill 的說明文字，很難判斷它好不好，看用它做出了什麼專案更直接。TunedHand（暫定名）是一個籌備中的繁體中文作品牆網站，預計收錄資深工程師的真實專案，讓讀者看專案怎麼做出來，最後才是用到的 skill 包。作者的經歷以作者自己說明為準，我們是否另外查核還沒決定。目前尚未開張，沒有作品、不能購買，也沒有收任何款項，預計 2027 年第二季前後開張（估計，可能延後或不開張）。TunedHand 與 Anthropic 沒有合作或從屬關係。</p>
+<p>我們目前也在找願意分享專案的工程師：預計的做法是你花 30 分鐘秀一下專案，由我們協助整理成 skill 與案例，你看過同意才會公開；其他條件還在重新檢視，確定前會先告訴你。有興趣請直接寫信到 <a href="mailto:tunedhand.tw@gmail.com">tunedhand.tw@gmail.com</a>。想在開張時收到通知，可以到候補頁登記：<a href="https://thb-tw.github.io/tunedhand-site/?src=article">https://thb-tw.github.io/tunedhand-site/?src=article</a></p>
+<hr>
+<p><strong>資料來源（皆為 Anthropic 官方文件，2026-11-16 查閱）</strong></p>
+<ul><li>Agent Skills 概覽（欄位限制、三層載入、各平台使用方式、使用提醒）：<a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview">https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview</a></li><li>Claude Code skills 文件（存放位置、輔助檔案與腳本、描述長度）：<a href="https://code.claude.com/docs/en/skills">https://code.claude.com/docs/en/skills</a></li></ul>
+</main>
+<footer><div class="wrap">TunedHand（暫定名）由個人（陳翰陞）籌備，尚未開張、尚未設立公司，不能購買、不收款。與 Anthropic 沒有合作或從屬關係。目前不服務歐盟、歐洲經濟區、英國與中國大陸。<a href="../index.html?src=article">回候補頁</a></div></footer>
+</body>
+</html>
