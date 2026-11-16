@@ -9,6 +9,10 @@ TunedHand (working name) is a planned publisher of senior engineers' real projec
 - [候補登記頁與常見問題 / Waitlist page and FAQ](index.html): 說明、怎麼運作、常見問題 / what it is, how it will work, FAQ
 - [隱私告知 / Privacy notice](privacy.html): 候補名單資料如何使用 / how waitlist data is used
 
+## 文章 / Articles
+
+- [怎麼把自己的工作流程做成 Claude skill？](articles/workflow-to-claude-skill.html): SKILL.md 最小結構、Claude 何時使用、腳本與參考資料、實用寫法（依 Anthropic 公開文件，2026-11-16 查閱）/ How to turn your workflow into a Claude skill
+
 ## 聯絡 / Contact
 
 - tunedhand.tw@gmail.com
